@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <div id="app">
+        <div>{{name}}</div>
+        <span>{{age}}</span>
+    </div>
+    <script src="./vue.js"></script>
+    <script>
+        const vm = new Vue({
+            data: {
+                name: '孙悟空',
+                age: 18,
+                address: {
+                    num: 1,
+                    content: '花果山'
+                },
+                team: ['猪八戒', '沙和尚', { name: '唐僧' }]
+            },
+            // el: '#app'
+            template: '<div>hello</div>'
+        })
+        vm.$mount('#app')
+    </script>
+</body>
+
+</html>

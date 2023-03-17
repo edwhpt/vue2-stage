@@ -1,4 +1,5 @@
 import babel from 'rollup-plugin-babel'
+import resolve from '@rollup/plugin-node-resolve'
 
 // rollup默认可以导出一个对象，作为打包的配置文件
 export default {
@@ -11,9 +12,10 @@ export default {
     },
     // 配置一些插件
     plugins: [
-      // 所有插件都是函数，直接执行
-      babel({
-        exclude: 'node_modules/**' // 排除node_modules所有文件
-      })
+        // 所有插件都是函数，直接执行
+        babel({
+            exclude: 'node_modules/**' // 排除node_modules所有文件
+        }),
+        resolve()
     ]
 }

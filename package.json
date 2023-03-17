@@ -20,5 +20,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "@rollup/plugin-node-resolve": "^15.0.1"
   }
 }
