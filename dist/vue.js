@@ -50,11 +50,63 @@
     return typeof key === "symbol" ? key : String(key);
   }
 
+  // 重写数组中的部分方法
+
+  var oldArrayProto = Array.prototype; // 获取数组的原型
+
+  // newArrayProto.__proto__ = oldArrayProto
+  var newArrayProto = Object.create(oldArrayProto);
+
+  // 找到所有的变异方法（会改变原数组）
+  var methods = ['push', 'pop', 'shift', 'unshift', 'reverse', 'sort', 'splice'];
+  methods.forEach(function (method) {
+    // 这里重写了数组的方法
+    newArrayProto[method] = function () {
+      var _oldArrayProto$method;
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+      var result = (_oldArrayProto$method = oldArrayProto[method]).call.apply(_oldArrayProto$method, [this].concat(args)); // 内部调用原来的方法，函数的劫持，切片编程
+
+      // 需要对数据新增的数据再次进行劫持
+      var inserted;
+      var ob = this.__ob__;
+      switch (method) {
+        case 'push':
+        case 'unshift':
+          inserted = args;
+          break;
+        case 'splice':
+          inserted = args.slice(2);
+      }
+      // console.log('ob', this) // 新增的内容
+      if (inserted) {
+        // 对新增的内容再次进行观测
+        ob.observeArray(inserted);
+      }
+      return result;
+    };
+  });
+
   var Observer = /*#__PURE__*/function () {
     function Observer(data) {
       _classCallCheck(this, Observer);
       // Object.defineProperty 只能劫持已存在的属性（vue里面会为此单独写一些api  $set $delete）
-      this.walk(data);
+      Object.defineProperty(data, '__ob__', {
+        value: this,
+        enumerable: false // 将__ob__变成不可枚举（循环的时候无法获取）
+      });
+
+      // console.log('Observer', data)
+      // data.__ob__ = this // 给数组加了一个标识，如果数据上有__ob__则说明这个属性被观测过了
+      if (Array.isArray(data)) {
+        // 重写数组的方法
+
+        data.__proto__ = newArrayProto; // 需要保留数组原有的特性，并且可以重写部分方法
+        this.observeArray(data); //如果数组中的元素是对象，可以监控到对象的变化
+      } else {
+        this.walk(data);
+      }
     }
     // 循环对象，对属性依次劫持
     _createClass(Observer, [{
@@ -65,6 +117,14 @@
           return defineReactive(data, key, data[key]);
         });
       }
+      // 观测数组
+    }, {
+      key: "observeArray",
+      value: function observeArray(data) {
+        data.forEach(function (item) {
+          return observe(item);
+        });
+      }
     }]);
     return Observer;
   }(); // 属性劫持(闭包)
@@ -73,6 +133,7 @@
     Object.defineProperty(target, key, {
       // 取值的时候，会执行get
       get: function get() {
+        console.log('get', key, value);
         return value;
       },
       // 修改的时候，会执行set
@@ -88,6 +149,11 @@
   function observe(data) {
     // 只对对象进行劫持
     if (_typeof(data) !== 'object' || data == null) {
+      return;
+    }
+
+    // 这个对象已经被代理过
+    if (data.__ob__ instanceof Observer) {
       return;
     }
 

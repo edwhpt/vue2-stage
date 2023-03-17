@@ -14,12 +14,14 @@
                 address: {
                     num: 1,
                     content: '花果山'
-                }
+                },
+                team: ['猪八戒', '沙和尚', { name: '唐僧' }]
             }
 
         })
 
-        // vm.address.content = '水帘洞'
+        vm.address.content = '水帘洞'
+        vm.team.splice(0, 1, '白龙马', '六耳猕猴')
         console.log(vm)
     </script>
 </head>
