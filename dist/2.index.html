@@ -10,7 +10,8 @@
 
 <body>
     <div id="app">
-        <div>{{name}}</div>
+
+        <div class="name" style="color: red;">hello, {{name}}</div>
         <span>{{age}}</span>
     </div>
     <script src="./vue.js"></script>
@@ -26,7 +27,7 @@
                 team: ['猪八戒', '沙和尚', { name: '唐僧' }]
             },
             // el: '#app'
-            template: '<div>hello</div>'
+            // template: '<div>hello</div>'
         })
         vm.$mount('#app')
     </script>
