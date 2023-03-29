@@ -67,7 +67,7 @@ function codegen(ast) {
 
 // 对模版进行编译处理（vue3采用的不是使用正则）
 export function compileToFunction(template) {
-    // 1.将template 转化成ast语法书
+    // 1.将template 转化成ast语法树
     let ast = parseHTML(template)
 
     // 2.生成render方法 （render方法执行后返回的结果就是 虚拟DOM）
@@ -75,6 +75,6 @@ export function compileToFunction(template) {
     let code = codegen(ast)
     code = `with(this){return ${code}}`
     let render = new Function(code) // 根据相关代码生成render函数
-
+    console.log(render)
     return render
 }

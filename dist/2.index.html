@@ -9,11 +9,11 @@
 </head>
 
 <body>
-    <div id="app" style="color: red;background: white;">
-
-        <div class="name" style="color: red;">{{name}} hello, {{age}}</div>
-        <span>hello，world</span>
+    <div id="app" style="color: lightgreen;background: black;" key="1">
+        <h1>hello, {{name}}</h1>
+        <span></span>
     </div>
+
     <script src="./vue.js"></script>
     <script>
         const vm = new Vue({
@@ -26,10 +26,13 @@
                 },
                 team: ['猪八戒', '沙和尚', { name: '唐僧' }]
             },
-            // el: '#app'
-            // template: '<div>hello</div>'
+            el: '#app',
+            // template: `<div>
+            //     <span style="background: red;">hello,{{ name }}</span>
+            //     <div style="background: blue;">{{ age }}</div>
+            // </div>`
         })
-        vm.$mount('#app')
+        // vm.$mount('#app')
     </script>
 </body>
 
